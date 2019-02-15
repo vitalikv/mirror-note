@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - mirror with nodes</title>
+		<title>three.js webgl</title>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		
 		<style>
 			body {
 				color: #888888;
@@ -28,12 +28,10 @@
 	<body>
 
 		<div id="container"></div>
-		<div id="info"><a href="http://threejs.org" target="_blank" rel="noopener">three.js</a> - mirror node-based
-		</div>
 
 		<script src="js/three.min.js"></script>
 		<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>		
-		<script src="https://threejs.org/examples/js/libs/dat.gui.min.js"></script>
+		
 		<script src="https://threejs.org/examples/js/objects/Reflector.js"></script>
 		<script src="https://threejs.org/examples/js/objects/ReflectorRTT.js"></script>
 		<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
@@ -49,13 +47,11 @@
 			var ASPECT = WIDTH / HEIGHT;
 			var NEAR = 1;
 			var FAR = 500;
-			var decalNormal = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/decal/decal-normal.jpg' );
-			var decalDiffuse = new THREE.TextureLoader().load( 'https://threejs.org/examples/textures/decal/decal-diffuse.png' );
-			decalDiffuse.wrapS = decalDiffuse.wrapT = THREE.RepeatWrapping;
+
 			var camera, scene, renderer;
 			var clock = new THREE.Clock();
 			var cameraControls;
-			var gui = new dat.GUI();
+			
 			var sphereGroup, smallSphere;
 			var groundMirrorMaterial;
 			var frame = new THREE.NodeFrame();
@@ -78,8 +74,9 @@
 				cameraControls.maxDistance = 400;
 				cameraControls.minDistance = 10;
 				cameraControls.update();
-				var container = document.getElementById( 'container' );
-				container.appendChild( renderer.domElement );
+				//var container = document.getElementById( 'container' );
+				//container.appendChild( renderer.domElement );
+				document.body.appendChild( renderer.domElement );
 			}
 			function fillScene() {
 				var planeGeo = new THREE.PlaneBufferGeometry( 100.1, 100.1 );
@@ -116,6 +113,7 @@
 
 				sphereGroup = new THREE.Object3D();
 				scene.add( sphereGroup );
+				
 				var geometry = new THREE.CylinderBufferGeometry( 0.1, 15 * Math.cos( Math.PI / 180 * 30 ), 0.1, 24, 1 );
 				var material = new THREE.MeshPhongMaterial( { color: 0xffffff, emissive: 0x444444 } );
 				var sphereCap = new THREE.Mesh( geometry, material );
@@ -128,10 +126,12 @@
 				halfSphere.rotateZ( - Math.PI / 180 * 20 );
 				halfSphere.position.y = 7.5 + 15 * Math.sin( Math.PI / 180 * 30 );
 				sphereGroup.add( halfSphere );
+				
 				var geometry = new THREE.IcosahedronBufferGeometry( 5, 0 );
 				var material = new THREE.MeshPhongMaterial( { color: 0xffffff, emissive: 0x333333, flatShading: true } );
 				smallSphere = new THREE.Mesh( geometry, material );
 				scene.add( smallSphere );
+				
 				// walls
 				var planeTop = new THREE.Mesh( planeGeo, new THREE.MeshPhongMaterial( { color: 0xffffff } ) );
 				planeTop.position.y = 100;
@@ -170,12 +170,11 @@
 				blueLight.position.set( 0, 50, 550 );
 				scene.add( blueLight );
 			}
-			function render() {
-				renderer.render( scene, camera );
-			}
+			
+			
 			function update() {
 				requestAnimationFrame( update );
-				var delta = clock.getDelta();
+				
 				var timer = Date.now() * 0.01;
 				sphereGroup.rotation.y -= 0.002;
 				smallSphere.position.set(
@@ -185,8 +184,8 @@
 				);
 				smallSphere.rotation.y = ( Math.PI / 2 ) - timer * 0.1;
 				smallSphere.rotation.z = timer * 0.8;
-				frame.update( delta ).updateNode( groundMirrorMaterial );
-				render();
+				//frame.update( delta ).updateNode( groundMirrorMaterial );
+				renderer.render( scene, camera );
 			}
 			init();
 			fillScene();
