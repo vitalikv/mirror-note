@@ -53,7 +53,7 @@
 			var cameraControls;
 			
 			var sphereGroup, smallSphere;
-			var groundMirrorMaterial;
+			var rightMirrorMaterial;
 			var frame = new THREE.NodeFrame();
 			function init() {
 				// renderer
@@ -82,32 +82,39 @@
 				var planeGeo = new THREE.PlaneBufferGeometry( 100.1, 100.1 );
 				// reflector/mirror plane
 				
-				var groundMirror = new THREE.ReflectorRTT( new THREE.PlaneBufferGeometry( 100, 100 ), { clipBias: 0.003, textureWidth: WIDTH, textureHeight: HEIGHT } );
+				var mirrorRTT = new THREE.ReflectorRTT(new THREE.PlaneBufferGeometry( 100, 100 ), {clipBias: 0.003, textureWidth:WIDTH, textureHeight:HEIGHT});
 				
-				var groundMirror_2 = groundMirror.clone();
+				var mirrorRTT_bottom = new THREE.ReflectorRTT(new THREE.PlaneBufferGeometry( 100, 100 ), {clipBias: 0.003, textureWidth:WIDTH, textureHeight:HEIGHT});
+				var mirrorRTT_right = new THREE.ReflectorRTT(new THREE.PlaneBufferGeometry( 100, 100 ), {clipBias: 0.003, textureWidth:WIDTH, textureHeight:HEIGHT});
 				
-				//groundMirror.rotateY( - Math.PI / 2 );
-				groundMirror.position.x = 50;
-				groundMirror.position.y = 50;
-				groundMirror.rotateY( - Math.PI / 2 );
+				mirrorRTT_right.position.x = 50;
+				mirrorRTT_right.position.y = 50;
+				mirrorRTT_right.rotateY( - Math.PI / 2 );
+				scene.add( mirrorRTT_right );
 				
-				groundMirror_2.position.x = 0;
-				groundMirror_2.position.y = 0;
-				groundMirror_2.rotateX( - Math.PI / 2 );
 				
-				var mirror = new THREE.ReflectorNode( groundMirror );
-				groundMirrorMaterial = new THREE.PhongNodeMaterial();
-				groundMirrorMaterial.environment = mirror; 
-				//var mirrorMesh = new THREE.Mesh( planeGeo, groundMirrorMaterial );
-				//groundMirror.add( mirrorMesh );
-				scene.add( groundMirror );				
+				mirrorRTT_bottom.position.x = 0;
+				mirrorRTT_bottom.position.y = 0;
+				mirrorRTT_bottom.rotateX( - Math.PI / 2 );
+				scene.add( mirrorRTT_bottom );
 				
-				var mirror_2 = new THREE.ReflectorNode( groundMirror_2 );
+				
+				rightMirrorMaterial = new THREE.PhongNodeMaterial();
+				rightMirrorMaterial.color.r = 0; 
+				rightMirrorMaterial.color.g = 0; 
+				rightMirrorMaterial.color.b = 0; 
+				rightMirrorMaterial.environment = new THREE.ReflectorNode( mirrorRTT_right ); 
+				//rightMirrorMaterial.defaultAttributeValues.color = [0.5, 0.5, 0.5];
+					console.log(rightMirrorMaterial);			
+				
+				
 				var groundMirrorMaterial_2 = new THREE.PhongNodeMaterial();
-				groundMirrorMaterial_2.environment = mirror_2; 				
+				groundMirrorMaterial_2.environment = new THREE.ReflectorNode( mirrorRTT_bottom ); 				
+				
+				
 				var mirrorMesh_2 = new THREE.Mesh( planeGeo, groundMirrorMaterial_2 );
-				groundMirror_2.add( mirrorMesh_2 );
-				scene.add( groundMirror_2 );
+				mirrorRTT_bottom.add( mirrorMesh_2 );
+				
 				
 				
 
@@ -146,7 +153,7 @@
 				planeFront.position.y = 50;
 				planeFront.rotateY( Math.PI );
 				scene.add( planeFront );
-				var planeRight = new THREE.Mesh( planeGeo, groundMirrorMaterial );
+				var planeRight = new THREE.Mesh( planeGeo, rightMirrorMaterial );
 				planeRight.position.x = 50;
 				planeRight.position.y = 50;
 				planeRight.rotateY( - Math.PI / 2 );
@@ -184,7 +191,7 @@
 				);
 				smallSphere.rotation.y = ( Math.PI / 2 ) - timer * 0.1;
 				smallSphere.rotation.z = timer * 0.8;
-				//frame.update( delta ).updateNode( groundMirrorMaterial );
+				//frame.update( delta ).updateNode( rightMirrorMaterial );
 				renderer.render( scene, camera );
 			}
 			init();
